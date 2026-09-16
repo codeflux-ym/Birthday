@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday 💗</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+<div id="app">
+  <div class="floaters" id="floaters"></div>
+  <div class="page-nav" id="pageNav"></div>
+
+  <section class="page" id="page-0">
+    <p class="p1-title">I have something special for you...</p>
+    <p class="p1-sub">Open it and read 💌</p>
+
+    <div class="envelope-wrap" id="envelopeWrap">
+      <div class="envelope" id="envelope">
+        <div class="env-body"></div>
+        <div class="letter">
+          <div class="letter-lines"><span></span><span></span><span></span></div>
+        </div>
+        <div class="env-pocket"></div>
+        <div class="env-flap"></div>
+        <div class="seal">♥</div>
+      </div>
+    </div>
+    <p class="tap-hint">tap the envelope</p>
+  </section>
+
+  <div class="letter-overlay" id="letterOverlay">
+    <div class="letter-card" id="letterCard">
+      <p class="letter-heading">Dear love,</p>
+      <p class="letter-body" id="letterBody"></p>
+      <p class="letter-signoff">Yours, always 💗</p>
+      <div style="display:flex; justify-content:flex-end;">
+        <button class="close-letter" id="closeLetterBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="page" id="page-1">
+    <p class="p-title">A few sweet little things</p>
+    <p class="p-sub">flip each card ✨</p>
+
+    <div class="notes-grid" id="notesGrid"></div>
+    <button class="next-btn show" id="toPage2">Continue →</button>
+  </section>
+
+  <section class="page" id="page-2">
+    <p class="p-title">A little bit of us</p>
+    <p class="p-sub">a few moments worth remembering</p>
+
+    <div class="timeline" id="timeline"></div>
+    <button class="next-btn show" id="toPage3">Continue →</button>
+  </section>
+
+  <section class="page" id="page-3">
+    <p class="p-title">Cake time! 🎂</p>
+    <p class="p-sub">tap the candles to blow them out</p>
+
+    <div class="cake-wrap">
+      <div class="candles" id="candles"></div>
+      <div class="cake">
+        <div class="tier top"><div class="drip"></div></div>
+        <div class="tier bottom"><div class="drip"></div></div>
+        <div class="plate"></div>
+      </div>
+    </div>
+
+    <p class="cake-hint" id="cakeHint">3 candles left</p>
+    <p class="cake-msg" id="cakeMsg"></p>
+    <button class="next-btn" id="toPage4">Continue →</button>
+  </section>
+
+  <section class="page" id="page-4">
+    <p class="p-title">Pop a balloon, catch a wish</p>
+    <p class="p-sub">tap each balloon</p>
+
+    <div class="balloon-field" id="balloonField"></div>
+    <p class="wish-caught" id="wishCaught"></p>
+    <p class="balloon-progress" id="balloonProgress"></p>
+    <button class="next-btn" id="toPage5">Continue →</button>
+  </section>
+
+  <section class="page" id="page-5">
+    <h1 class="final-heading">Happy Birthday!</h1>
+    <p class="final-text">May this year be full of joy, laughter and love for you. You deserve every bit of happiness that comes your way — today, and always. 💗🎉</p>
+    <button class="restart-btn" id="restartBtn">Watch it again? 💌</button>
+  </section>
+</div>
+
+<script src ="script.js"></script>
+</body>
+</html>
