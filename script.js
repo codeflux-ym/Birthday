@@ -13,8 +13,8 @@ Happy birthday, My love! 🎂`,
     ],
 
     timeline: [
-      { label:'HOW IT STARTED', text:"The day we met, I had no idea how much you'd end up meaning to me." },
-      { label:'A FAVOURITE MEMORY', text:"That one day we couldn't stop laughing over something so silly — still makes me smile." },
+      { label:'HOW IT STARTED', text:"The Day We Met, I Had No Idea How Much You'd End Up Meaning To Me." },
+      { label:'A FAVOURITE MEMORY', text:"That One Day We Couldn't Stop Laughing Over Something So Silly — Still Makes Me Smile." },
       { label:'RIGHT NOW', text:"Here We Are, Celebrating You, And I Couldn't Be Happier To Be Doing This." },
       { label:"WHAT'S NEXT", text:"Here's To Many More Birthdays, Memories, And Moments Together." }
     ],
