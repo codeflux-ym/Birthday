@@ -31,11 +31,11 @@ const CONFIG = {
   // Timeline for "Two Brothers. Countless Memories."
   // text = short line on the card, more = extra line shown when the card is tapped
   timeline: [
-    { date: "[Date]", title: "Our First Memorable Moment", text: "[Describe a first memory you share.]", more: "[Add a little extra detail here.]" },
-    { date: "[Date]", title: "A Funny Experience", text: "[Describe something that still makes you both laugh.]", more: "[Add the funniest part here.]" },
-    { date: "[Date]", title: "A Special Celebration", text: "[Describe a birthday, festival or family celebration.]", more: "[Add what made it special.]" },
-    { date: "[Date]", title: "Our Adventure Together", text: "[Describe a trip, ride or outing you took together.]", more: "[Add where you went and how it felt.]" },
-    { date: "[Date]", title: "An Unforgettable Memory", text: "[Describe a moment you will never forget.]", more: "[Add why it matters to you.]" }
+    { title: "Our First Memorable Moment", text: "Every beautiful bond has moments that make it special, and every moment spent with you has become a memory worth keeping.", more: "I may not remember every little detail, but I will always remember how special those moments felt. Some memories never fade, especially when they are made with someone who means so much." },
+    { title: "A Funny Experience", text: "From silly jokes to endless laughter, we have shared so many moments that can make us smile even on the worst days.", more: "Sometimes we laugh at the most random things, and honestly, those little crazy moments are among my favourite memories. Life would be a lot less fun without you, Bhai!" },
+    { title: "A Special Celebration", text: "Celebrations become even more beautiful when shared with the people who matter most. Every special occasion with you adds another beautiful memory to my life.", more: "It's never just about the occasion, the gifts or the celebrations. It's about having you there, sharing happiness and making moments that I will always cherish." },
+    { title: "Our Adventure Together", text: "Every journey becomes special when you have the right person beside you. Whether it's a little outing or a big adventure, being together makes it memorable.", more: "It's not always about where we go, but about the fun, conversations, laughter and little unexpected moments along the way. I hope we create countless more adventures together." },
+    { title: "An Unforgettable Memory", text: "Among all the memories life gives us, some moments hold a special place in our hearts. For me, every moment that reminds me of our bond is one of them.", more: "No matter how many years pass or how much life changes, I never want to lose the bond we share. You will always be an irreplaceable part of my life, Sachin. Forever brothers!" }
   ]
 };
 
