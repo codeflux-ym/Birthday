@@ -23,13 +23,14 @@ const CONFIG = {
   // Videos for "Little Moments, Lifetime Memories."
   // poster = thumbnail image (optional, leave "" for none)
   videos: [
-    { src: "VID-20261120-WA0025.mp4", poster: "assets/images/video1-thumb.jpg", },
-    { src: "VID-20261120-WA0028.mp4", poster: "assets/images/video2-thumb.jpg", },
-    { src: "VID-20261120-WA0029.mp4", poster: "assets/images/video3-thumb.jpg", }
+    { src: "VID-20261120-WA0025.mp4", poster: "", title: "Memory 1", caption: "" },
+    { src: "VID-20261120-WA0028.mp4", poster: "", title: "Memory 2", caption: "" },
+    { src: "VID-20261120-WA0029.mp4", poster: "", title: "Memory 3", caption: "" }
   ],
 
   // Timeline for "Two Brothers. Countless Memories."
   // text = short line on the card, more = extra line shown when the card is tapped
+  // date = optional small label on the card (leave out or "" for none)
   timeline: [
     { title: "Our First Memorable Moment", text: "Every beautiful bond has moments that make it special, and every moment spent with you has become a memory worth keeping.", more: "I may not remember every little detail, but I will always remember how special those moments felt. Some memories never fade, especially when they are made with someone who means so much." },
     { title: "A Funny Experience", text: "From silly jokes to endless laughter, we have shared so many moments that can make us smile even on the worst days.", more: "Sometimes we laugh at the most random things, and honestly, those little crazy moments are among my favourite memories. Life would be a lot less fun without you, Bhai!" },
@@ -106,7 +107,7 @@ const CONFIG = {
   const pCanvas = $("#particles");
   const pCtx = pCanvas.getContext("2d");
   let particles = [];
-  let pw = 0, ph = 0, pRunning = true;
+  let pw = 0, ph = 0, pRunning = true, pLoopActive = false;
 
   function sizeParticles() {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -129,7 +130,7 @@ const CONFIG = {
     };
   }
   function drawParticles() {
-    if (!pRunning) return;
+    if (!pRunning) { pLoopActive = false; return; }
     pCtx.clearRect(0, 0, pw, ph);
     for (const p of particles) {
       p.y -= p.vy; p.x += p.vx; p.tw += 0.03;
@@ -146,8 +147,13 @@ const CONFIG = {
     }
     requestAnimationFrame(drawParticles);
   }
+  function startParticles() {
+    if (pLoopActive || reduceMotion) return; // prevents double loops (speed-up bug)
+    pLoopActive = true;
+    requestAnimationFrame(drawParticles);
+  }
   sizeParticles();
-  if (!reduceMotion) drawParticles();
+  startParticles();
   let resizeTimer;
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
@@ -155,7 +161,7 @@ const CONFIG = {
   });
   document.addEventListener("visibilitychange", () => {
     pRunning = !document.hidden;
-    if (pRunning && !reduceMotion) drawParticles();
+    if (pRunning) startParticles();
   });
 
   /* ---------- Floating hearts ---------- */
@@ -314,6 +320,7 @@ const CONFIG = {
       document.body.classList.remove("locked");
       observeReveals();
       startHearts();
+      onScroll();
       if (!reduceMotion) confettiBurst(cw / 2, ch * 0.7);
     }, 800);
   });
@@ -393,9 +400,13 @@ const CONFIG = {
 
   /* ---------- Hero photo fallback ---------- */
   const heroImg = $("#heroPhoto");
-  const heroFrame = heroImg.closest(".photo-frame");
-  heroImg.addEventListener("error", () => heroFrame.classList.add("missing"));
-  if (heroImg.complete && heroImg.naturalWidth === 0) heroFrame.classList.add("missing");
+  if (heroImg) {
+    const heroFrame = heroImg.closest(".photo-frame");
+    if (heroFrame) {
+      heroImg.addEventListener("error", () => heroFrame.classList.add("missing"));
+      if (heroImg.complete && heroImg.naturalWidth === 0) heroFrame.classList.add("missing");
+    }
+  }
 
   /* ---------- Gallery + lightbox ---------- */
   const gallery = $("#gallery");
@@ -412,9 +423,8 @@ const CONFIG = {
     const img = $("img", btn);
     const markMissing = () => btn.classList.add("missing");
     img.addEventListener("error", markMissing);
-    if (img.complete && img.naturalWidth === 0 && img.getAttribute("src")) {
-      // may still be loading; error event will handle failures
-    }
+    // image may already have failed before the listener was attached
+    if (img.complete && img.naturalWidth === 0) markMissing();
     btn.addEventListener("click", () => openLightbox(i));
     gallery.appendChild(btn);
   });
@@ -436,6 +446,7 @@ const CONFIG = {
     lbImg.hidden = false;
     lbImg.alt = g.caption || "";
     lbImg.onerror = () => {
+      if (!lbImg.getAttribute("src")) return;
       lbImg.hidden = true;
       lbMissing.hidden = false;
       lbMissingText.textContent = "Add your photo: " + g.src;
@@ -486,15 +497,16 @@ const CONFIG = {
   let musicWasOn = false;
 
   CONFIG.videos.forEach((v, i) => {
+    const vTitle = v.title || "Video " + (i + 1);
     const card = document.createElement("article");
     card.className = "video-card glass reveal";
     card.style.setProperty("--d", i * 0.1 + "s");
     card.innerHTML =
       '<div class="video-wrap">' +
-        '<video preload="none" playsinline ' + (v.poster ? 'poster="' + esc(v.poster) + '"' : "") + ' src="' + esc(v.src) + '"></video>' +
-        '<button type="button" class="play-btn" aria-label="Play video: ' + esc(v.title) + '">▶</button>' +
+        '<video preload="metadata" playsinline ' + (v.poster ? 'poster="' + esc(v.poster) + '"' : "") + ' src="' + esc(v.src) + '"></video>' +
+        '<button type="button" class="play-btn" aria-label="Play video: ' + esc(vTitle) + '">▶</button>' +
       '</div>' +
-      '<div class="video-info"><h3>' + esc(v.title) + '</h3><p>' + esc(v.caption) + '</p></div>';
+      '<div class="video-info"><h3>' + esc(vTitle) + '</h3>' + (v.caption ? '<p>' + esc(v.caption) + '</p>' : "") + '</div>';
 
     const video = $("video", card);
     const btn = $(".play-btn", card);
@@ -524,7 +536,7 @@ const CONFIG = {
     video.addEventListener("pause", () => {
       card.classList.remove("playing");
       btn.textContent = "▶";
-      btn.setAttribute("aria-label", "Play video: " + v.title);
+      btn.setAttribute("aria-label", "Play video: " + vTitle);
       if (!videoCards.some((o) => !o.video.paused) && musicWasOn) {
         musicWasOn = false;
         playMusic();
@@ -544,7 +556,7 @@ const CONFIG = {
     item.innerHTML =
       '<span class="tl-dot"></span>' +
       '<div class="tl-card glass" role="button" tabindex="0" aria-expanded="false">' +
-        '<span class="tl-date">' + esc(t.date) + '</span>' +
+        (t.date ? '<span class="tl-date">' + esc(t.date) + '</span>' : "") +
         '<h3>' + esc(t.title) + '</h3>' +
         '<p>' + esc(t.text) + '</p>' +
         (t.more ? '<div class="tl-more"><div><p>' + esc(t.more) + '</p></div></div><span class="tl-hint">Tap to read more ↓</span>' : "") +
@@ -555,7 +567,7 @@ const CONFIG = {
       if (!t.more) return;
       const open = card.classList.toggle("open");
       card.setAttribute("aria-expanded", String(open));
-      hint.textContent = open ? "Tap to close ↑" : "Tap to read more ↓";
+      if (hint) hint.textContent = open ? "Tap to close ↑" : "Tap to read more ↓";
       if (open) heartBurst(card.getBoundingClientRect().left + 40, card.getBoundingClientRect().top + 30, 4);
     }
     card.addEventListener("click", toggle);
