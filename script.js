@@ -294,7 +294,7 @@ const CONFIG = {
       p.then(() => setMusicUI(true)).catch(() => {
         musicWanted = false;
         setMusicUI(false);
-        toast("Music file not found. Add assets/music/birthday-music.mp3");
+        toast("Music file not found. Add song.mp3");
       });
     } else setMusicUI(true);
   }
