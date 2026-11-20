@@ -1,257 +1,614 @@
-(function(){
-  const CONFIG = {
-    letterText: `Today Is A Special Day For Me My Favourite Person birthday — That Night 2:00 Am The Beautiful Person Came In This World.
-Happy Birthday To My Favourite Person şＨ𝕀𝔳ᵃη𝐘Ａ𝐍 My Life Partner My Everything Meri Sweetu My Beetu Bachhu Today is The Best Day Of Life Because It's My Partner Birthday Being With You Today Is The Greatest Gift I could Ever Ask For God Thank you To Choosing Me And Loving Me So Much I promise to Always Keep You Happy Take Care Of You Support You And Stand For You In Every Situation Every Moment Of Life You Are The Brightness Of My Life ( Meri Roshni Ji )And Because Of You My World Is Beautiful You Are The Most Beautiful Girl In This World Meri Bachhu Every Moment With You Is Precious And Every Memory We Create Together Means Everything To Me I Always Support Your Dreams
-Happy Birthday To My Everything I Wish You Always Happy With Me.
-Happy birthday, My love! 🎂`,
+/* =========================================================
+   Birthday website for Aashu
+   ---------------------------------------------------------
+   EDIT HERE: your photos, videos and timeline entries.
+   Put files in the assets/ folders and list them below.
+   ========================================================= */
+const CONFIG = {
 
-    notes: [
-      { icon:'😊', front:'Your smile', back:'Your Smile Has A Way Of Lighting Up My Whole Day .' },
-      { icon:'🤍', front:'Being Together', back:'Every Moment With You Feels Like The Calmest and Safest Place.' },
-      { icon:'🌱', front:'You Make Me Perfect And A Man ', back:'You Naughtiness Mastiyon Habbit I Love It .' },
-      { icon:'⭐', front:'Every Moment', back:'You are My Dream Girl Bachhu.' }
-    ],
+  // Photos for "Some Memories Never Fade..."
+  // ratio = shape of the placeholder shown until your real photo exists ("4 / 5", "1 / 1", "16 / 10"...)
+  // Real photos keep their own natural shape. Add or remove lines freely.
+  gallery: [
+    { src: "assets/images/memory1.jpg", caption: "Caption for memory 1", ratio: "4 / 5" },
+    { src: "assets/images/memory2.jpg", caption: "Caption for memory 2", ratio: "1 / 1" },
+    { src: "assets/images/memory3.jpg", caption: "Caption for memory 3", ratio: "16 / 11" },
+    { src: "assets/images/memory4.jpg", caption: "Caption for memory 4", ratio: "3 / 4" },
+    { src: "assets/images/memory5.jpg", caption: "Caption for memory 5", ratio: "4 / 3" },
+    { src: "assets/images/memory6.jpg", caption: "Caption for memory 6", ratio: "4 / 5" },
+    { src: "assets/images/memory7.jpg", caption: "Caption for memory 7", ratio: "1 / 1" },
+    { src: "assets/images/memory8.jpg", caption: "Caption for memory 8", ratio: "3 / 4" }
+  ],
 
-    timeline: [
-      { label:'HOW IT STARTED', text:"The Day We Met, I Had No Idea How Much You'd End Up Meaning To Me." },
-      { label:'A FAVOURITE MEMORY', text:"That One Day We Couldn't Stop Laughing Over Something So Silly — Still Makes Me Smile." },
-      { label:'RIGHT NOW', text:"Here We Are, Celebrating You, And I Couldn't Be Happier To Be Doing This." },
-      { label:"WHAT'S NEXT", text:"Here's To Many More Birthdays, Memories, And Moments Together." }
-    ],
+  // Videos for "Little Moments, Lifetime Memories."
+  // poster = thumbnail image (optional, leave "" for none)
+  videos: [
+    { src: "assets/videos/video1.mp4", poster: "assets/images/video1-thumb.jpg", title: "Video title 1", caption: "Write a few words about this moment." },
+    { src: "assets/videos/video2.mp4", poster: "assets/images/video2-thumb.jpg", title: "Video title 2", caption: "Write a few words about this moment." },
+    { src: "assets/videos/video3.mp4", poster: "assets/images/video3-thumb.jpg", title: "Video title 3", caption: "Write a few words about this moment." }
+  ],
 
-    balloonWishes: [
-      'Wishing You Endless Happiness 🎈',
-      'May All your Dreams Comes True ✨',
-      'Wishing You Health, Joy And Love 💗',
-      "Coming Year Full With Happiness 🌟",
-      'May You Always Safe With Me  🤍',
-      'Sending You All My Love Today 💌',
-      'May Be In Future Us Dream 😊',
-      'Celebrate  Together That Moments 🥂'
-    ]
-  };
+  // Timeline for "Two Brothers. Countless Memories."
+  // text = short line on the card, more = extra line shown when the card is tapped
+  timeline: [
+    { date: "[Date]", title: "Our First Memorable Moment", text: "[Describe a first memory you share.]", more: "[Add a little extra detail here.]" },
+    { date: "[Date]", title: "A Funny Experience", text: "[Describe something that still makes you both laugh.]", more: "[Add the funniest part here.]" },
+    { date: "[Date]", title: "A Special Celebration", text: "[Describe a birthday, festival or family celebration.]", more: "[Add what made it special.]" },
+    { date: "[Date]", title: "Our Adventure Together", text: "[Describe a trip, ride or outing you took together.]", more: "[Add where you went and how it felt.]" },
+    { date: "[Date]", title: "An Unforgettable Memory", text: "[Describe a moment you will never forget.]", more: "[Add why it matters to you.]" }
+  ]
+};
 
-  document.getElementById('letterBody').innerText = CONFIG.letterText;
-  const floaters = document.getElementById('floaters');
-  const emojis = ['💗','✨','💫','🌸'];
-  for(let i=0;i<16;i++){
-    const el = document.createElement('span');
-    el.className = 'floater';
-    el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
-    el.style.left = Math.random()*100 + 'vw';
-    el.style.setProperty('--drift', (Math.random()*80-40) + 'px');
-    el.style.animationDuration = (10 + Math.random()*10) + 's';
-    el.style.animationDelay = (Math.random()*10) + 's';
-    el.style.fontSize = (14 + Math.random()*14) + 'px';
-    floaters.appendChild(el);
+
+/* =========================================================
+   Code below normally needs no changes.
+   ========================================================= */
+(function () {
+  "use strict";
+
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isSmall = () => window.innerWidth < 700;
+
+  function esc(str) {
+    const d = document.createElement("div");
+    d.textContent = str == null ? "" : String(str);
+    return d.innerHTML;
   }
 
-  const pages = ['page-0','page-1','page-2','page-3','page-4','page-5'];
-  let unlocked = 0; 
-  let current = 0;
-  const navEl = document.getElementById('pageNav');
+  /* ---------- Toast ---------- */
+  const toastEl = $("#toast");
+  let toastTimer;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("show"), 3200);
+  }
 
-  function renderDots(){
-    navEl.innerHTML = '';
-    pages.forEach((id, i)=>{
-      const b = document.createElement('button');
-      b.className = 'dot' + (i===current ? ' active' : '');
-      b.disabled = i > unlocked;
-      b.addEventListener('click', ()=> goTo(i));
-      navEl.appendChild(b);
+  /* ---------- Loader ---------- */
+  const loader = $("#loader");
+  const loadStart = performance.now();
+  let loaderGone = false;
+  function hideLoader() {
+    if (loaderGone) return;
+    loaderGone = true;
+    const wait = Math.max(0, 1100 - (performance.now() - loadStart));
+    setTimeout(() => loader.classList.add("done"), wait);
+  }
+  window.addEventListener("load", hideLoader);
+  setTimeout(hideLoader, 4000);
+
+  /* ---------- Cake artwork ---------- */
+  const cakeTpl = $("#cakeTemplate");
+  $$("[data-cake]").forEach((el) => el.appendChild(cakeTpl.content.cloneNode(true)));
+
+  /* ---------- Welcome stars ---------- */
+  (function makeStars() {
+    const box = $("#stars");
+    const n = isSmall() ? 45 : 90;
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < n; i++) {
+      const s = document.createElement("span");
+      s.style.left = Math.random() * 100 + "%";
+      s.style.top = Math.random() * 100 + "%";
+      const size = 1 + Math.random() * 2.5;
+      s.style.width = s.style.height = size + "px";
+      s.style.setProperty("--t", 2 + Math.random() * 4 + "s");
+      s.style.setProperty("--dl", Math.random() * 4 + "s");
+      frag.appendChild(s);
+    }
+    box.appendChild(frag);
+  })();
+
+  /* ---------- Golden particles (canvas) ---------- */
+  const pCanvas = $("#particles");
+  const pCtx = pCanvas.getContext("2d");
+  let particles = [];
+  let pw = 0, ph = 0, pRunning = true;
+
+  function sizeParticles() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    pw = window.innerWidth; ph = window.innerHeight;
+    pCanvas.width = pw * dpr; pCanvas.height = ph * dpr;
+    pCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const count = isSmall() ? 28 : 55;
+    particles = Array.from({ length: count }, () => newParticle(true));
+  }
+  function newParticle(anywhere) {
+    return {
+      x: Math.random() * pw,
+      y: anywhere ? Math.random() * ph : ph + 10,
+      r: 0.8 + Math.random() * 2.2,
+      vy: 0.12 + Math.random() * 0.4,
+      vx: (Math.random() - 0.5) * 0.25,
+      a: 0.25 + Math.random() * 0.55,
+      tw: Math.random() * Math.PI * 2,
+      lav: Math.random() < 0.22
+    };
+  }
+  function drawParticles() {
+    if (!pRunning) return;
+    pCtx.clearRect(0, 0, pw, ph);
+    for (const p of particles) {
+      p.y -= p.vy; p.x += p.vx; p.tw += 0.03;
+      if (p.y < -10) Object.assign(p, newParticle(false));
+      const alpha = p.a * (0.6 + 0.4 * Math.sin(p.tw));
+      pCtx.beginPath();
+      pCtx.fillStyle = p.lav ? "rgba(196,167,255," + alpha + ")" : "rgba(212,175,55," + alpha + ")";
+      pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      pCtx.fill();
+      pCtx.beginPath();
+      pCtx.fillStyle = p.lav ? "rgba(196,167,255," + alpha * 0.15 + ")" : "rgba(212,175,55," + alpha * 0.15 + ")";
+      pCtx.arc(p.x, p.y, p.r * 3.2, 0, Math.PI * 2);
+      pCtx.fill();
+    }
+    requestAnimationFrame(drawParticles);
+  }
+  sizeParticles();
+  if (!reduceMotion) drawParticles();
+  let resizeTimer;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { sizeParticles(); sizeConfetti(); }, 150);
+  });
+  document.addEventListener("visibilitychange", () => {
+    pRunning = !document.hidden;
+    if (pRunning && !reduceMotion) drawParticles();
+  });
+
+  /* ---------- Floating hearts ---------- */
+  const heartsLayer = $("#hearts");
+  const heartChars = ["❤", "♥", "💜", "✦"];
+  let heartTimer = null;
+  function spawnHeart() {
+    if (document.hidden || heartsLayer.childElementCount > 18) return;
+    const h = document.createElement("span");
+    h.className = "float-heart";
+    h.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
+    h.style.left = Math.random() * 100 + "%";
+    h.style.fontSize = 12 + Math.random() * 20 + "px";
+    h.style.animationDuration = 8 + Math.random() * 7 + "s";
+    h.style.setProperty("--sway", (Math.random() - 0.5) * 120 + "px");
+    h.addEventListener("animationend", () => h.remove());
+    heartsLayer.appendChild(h);
+  }
+  function startHearts() {
+    if (reduceMotion || heartTimer) return;
+    heartTimer = setInterval(spawnHeart, 1100);
+  }
+  function heartBurst(x, y, n) {
+    for (let i = 0; i < n; i++) {
+      const h = document.createElement("span");
+      h.className = "float-heart";
+      h.textContent = heartChars[i % 3];
+      h.style.left = x + (Math.random() - 0.5) * 120 + "px";
+      h.style.bottom = "auto";
+      h.style.top = y + "px";
+      h.style.fontSize = 16 + Math.random() * 22 + "px";
+      h.style.animationDuration = 3 + Math.random() * 3 + "s";
+      h.style.setProperty("--sway", (Math.random() - 0.5) * 160 + "px");
+      h.addEventListener("animationend", () => h.remove());
+      heartsLayer.appendChild(h);
+    }
+  }
+
+  /* ---------- Confetti (canvas) ---------- */
+  const cCanvas = $("#confetti");
+  const cCtx = cCanvas.getContext("2d");
+  let confetti = [];
+  let cw = 0, ch = 0, cRunning = false;
+  const confettiColors = ["#D4AF37", "#f1d57a", "#C4A7FF", "#ffffff", "#b8932a", "#8f63d9"];
+
+  function sizeConfetti() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cw = window.innerWidth; ch = window.innerHeight;
+    cCanvas.width = cw * dpr; cCanvas.height = ch * dpr;
+    cCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  sizeConfetti();
+
+  function addConfetti(x, y, count, spread, power) {
+    for (let i = 0; i < count; i++) {
+      const angle = -Math.PI / 2 + (Math.random() - 0.5) * spread;
+      const speed = power * (0.5 + Math.random());
+      confetti.push({
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        w: 6 + Math.random() * 7,
+        h: 4 + Math.random() * 6,
+        rot: Math.random() * 6.28,
+        vr: (Math.random() - 0.5) * 0.4,
+        color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+        life: 0,
+        max: 150 + Math.random() * 90,
+        round: Math.random() < 0.3
+      });
+    }
+    if (!cRunning) { cRunning = true; requestAnimationFrame(drawConfetti); }
+  }
+  function drawConfetti() {
+    cCtx.clearRect(0, 0, cw, ch);
+    confetti = confetti.filter((c) => c.life < c.max && c.y < ch + 20);
+    for (const c of confetti) {
+      c.life++;
+      c.vy += 0.16; c.vx *= 0.99; c.vy *= 0.995;
+      c.x += c.vx; c.y += c.vy; c.rot += c.vr;
+      cCtx.save();
+      cCtx.globalAlpha = Math.max(0, 1 - c.life / c.max);
+      cCtx.translate(c.x, c.y);
+      cCtx.rotate(c.rot);
+      cCtx.fillStyle = c.color;
+      if (c.round) { cCtx.beginPath(); cCtx.arc(0, 0, c.w / 2.2, 0, 6.28); cCtx.fill(); }
+      else cCtx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h);
+      cCtx.restore();
+    }
+    if (confetti.length) requestAnimationFrame(drawConfetti);
+    else { cRunning = false; cCtx.clearRect(0, 0, cw, ch); }
+  }
+  function confettiBurst(x, y) {
+    const n = isSmall() ? 70 : 120;
+    addConfetti(x, y, n, Math.PI * 1.1, 13);
+  }
+  function confettiShower() {
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => {
+        const before = confetti.length;
+        addConfetti(Math.random() * cw, -10, isSmall() ? 25 : 45, 0, 0);
+        for (let k = before; k < confetti.length; k++) {
+          const c = confetti[k];
+          c.x = Math.random() * cw;
+          c.vx = (Math.random() - 0.5) * 3;
+          c.vy = 1 + Math.random() * 3;
+        }
+      }, i * 260);
+    }
+  }
+  function centerOf(el) {
+    const r = el.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  }
+
+  /* ---------- Music ---------- */
+  const bgm = $("#bgm");
+  const musicBtn = $("#musicBtn");
+  let musicWanted = false;
+
+  function setMusicUI(on) {
+    musicBtn.classList.toggle("playing", on);
+    musicBtn.setAttribute("aria-pressed", String(on));
+    musicBtn.setAttribute("aria-label", on ? "Pause music" : "Play music");
+  }
+  function playMusic() {
+    musicWanted = true;
+    const p = bgm.play();
+    if (p && p.then) {
+      p.then(() => setMusicUI(true)).catch(() => {
+        musicWanted = false;
+        setMusicUI(false);
+        toast("Music file not found. Add assets/music/birthday-music.mp3");
+      });
+    } else setMusicUI(true);
+  }
+  function pauseMusic() {
+    musicWanted = false;
+    bgm.pause();
+    setMusicUI(false);
+  }
+  musicBtn.addEventListener("click", () => (bgm.paused ? playMusic() : pauseMusic()));
+  bgm.addEventListener("error", () => { musicWanted = false; setMusicUI(false); });
+
+  /* ---------- Welcome -> main site ---------- */
+  const welcome = $("#welcome");
+  const site = $("#site");
+  $("#openBtn").addEventListener("click", function () {
+    this.disabled = true;
+    welcome.classList.add("leaving");
+    site.hidden = false;
+    window.scrollTo(0, 0);
+    requestAnimationFrame(() => requestAnimationFrame(() => site.classList.add("show")));
+    setTimeout(() => {
+      welcome.hidden = true;
+      document.body.classList.remove("locked");
+      observeReveals();
+      startHearts();
+      if (!reduceMotion) confettiBurst(cw / 2, ch * 0.7);
+    }, 800);
+  });
+
+  /* ---------- Navigation ---------- */
+  const nav = $("#nav");
+  const navLinks = $("#navLinks");
+  const menuBtn = $("#menuBtn");
+  const toTop = $("#toTop");
+  const sections = $$("main section[id]");
+
+  function setMenu(open) {
+    navLinks.classList.toggle("open", open);
+    menuBtn.setAttribute("aria-expanded", String(open));
+    menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  }
+  menuBtn.addEventListener("click", () => setMenu(!navLinks.classList.contains("open")));
+  $$("a", navLinks).forEach((a) => a.addEventListener("click", () => setMenu(false)));
+  document.addEventListener("click", (e) => {
+    if (navLinks.classList.contains("open") && !nav.contains(e.target)) setMenu(false);
+  });
+  toTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" }));
+
+  const tlFill = $("#tlFill");
+  const tlList = $("#timelineList");
+  let ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      nav.classList.toggle("scrolled", y > 30);
+      toTop.classList.toggle("show", y > 700);
+
+      let current = sections[0] && sections[0].id;
+      const probe = window.innerHeight * 0.35;
+      for (const s of sections) if (s.getBoundingClientRect().top <= probe) current = s.id;
+      $$("a", navLinks).forEach((a) => a.classList.toggle("active", a.getAttribute("href") === "#" + current));
+
+      // timeline progress line
+      const r = tlList.getBoundingClientRect();
+      const line = Math.min(Math.max(window.innerHeight * 0.55 - r.top, 0), r.height);
+      tlFill.style.height = line + "px";
+      $$(".tl-item", tlList).forEach((it) => {
+        const top = it.getBoundingClientRect().top;
+        it.classList.toggle("active", top < window.innerHeight * 0.55);
+      });
+      ticking = false;
     });
   }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
 
-  const sections = pages.map(id => document.getElementById(id));
-
-  function showPage(i){
-    sections.forEach((s, idx)=> s.classList.toggle('active', idx === i));
+  /* ---------- Scroll reveal ---------- */
+  let revealObserver = null;
+  function observeReveals() {
+    const items = $$(".reveal:not(.in)");
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      items.forEach((el) => el.classList.add("in"));
+      return;
+    }
+    if (!revealObserver) {
+      revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) {
+            const el = en.target;
+            el.classList.add("in");
+            revealObserver.unobserve(el);
+            // drop the entrance delay so hover effects stay snappy afterwards
+            setTimeout(() => el.style.setProperty("--d", "0s"), 1700);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+    }
+    items.forEach((el) => revealObserver.observe(el));
   }
 
-  function goTo(i){
-    if(i > unlocked) return;
-    current = i;
-    showPage(i);
-    renderDots();
+  /* ---------- Hero photo fallback ---------- */
+  const heroImg = $("#heroPhoto");
+  const heroFrame = heroImg.closest(".photo-frame");
+  heroImg.addEventListener("error", () => heroFrame.classList.add("missing"));
+  if (heroImg.complete && heroImg.naturalWidth === 0) heroFrame.classList.add("missing");
+
+  /* ---------- Gallery + lightbox ---------- */
+  const gallery = $("#gallery");
+  CONFIG.gallery.forEach((g, i) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "g-item reveal";
+    btn.style.setProperty("--d", (i % 3) * 0.1 + "s");
+    btn.setAttribute("aria-label", "Open photo: " + (g.caption || "memory " + (i + 1)));
+    btn.innerHTML =
+      '<img src="' + esc(g.src) + '" alt="' + esc(g.caption) + '" decoding="async">' +
+      '<div class="ph" style="--ratio:' + esc(g.ratio || "4 / 5") + '"><span>📷</span><p>Add your photo<br><small>' + esc(g.src) + '</small></p></div>' +
+      (g.caption ? '<span class="cap">' + esc(g.caption) + '</span>' : "");
+    const img = $("img", btn);
+    const markMissing = () => btn.classList.add("missing");
+    img.addEventListener("error", markMissing);
+    if (img.complete && img.naturalWidth === 0 && img.getAttribute("src")) {
+      // may still be loading; error event will handle failures
+    }
+    btn.addEventListener("click", () => openLightbox(i));
+    gallery.appendChild(btn);
+  });
+
+  const lb = $("#lightbox");
+  const lbImg = $("#lbImg");
+  const lbMissing = $("#lbMissing");
+  const lbMissingText = $("#lbMissingText");
+  const lbCaption = $("#lbCaption");
+  let lbIndex = 0;
+  let lastFocus = null;
+
+  function showLightbox(i) {
+    const n = CONFIG.gallery.length;
+    lbIndex = (i + n) % n;
+    const g = CONFIG.gallery[lbIndex];
+    lbCaption.textContent = g.caption || "";
+    lbMissing.hidden = true;
+    lbImg.hidden = false;
+    lbImg.alt = g.caption || "";
+    lbImg.onerror = () => {
+      lbImg.hidden = true;
+      lbMissing.hidden = false;
+      lbMissingText.textContent = "Add your photo: " + g.src;
+    };
+    lbImg.src = g.src;
   }
-
-  showPage(0);
-  renderDots();
-
-  function unlockUpTo(i){
-    if(i > unlocked){ unlocked = i; renderDots(); }
+  function openLightbox(i) {
+    lastFocus = document.activeElement;
+    showLightbox(i);
+    lb.hidden = false;
+    document.body.classList.add("locked");
+    $("#lbClose").focus();
   }
+  function closeLightbox() {
+    lb.hidden = true;
+    lbImg.removeAttribute("src");
+    document.body.classList.remove("locked");
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  $("#lbClose").addEventListener("click", closeLightbox);
+  $("#lbPrev").addEventListener("click", () => showLightbox(lbIndex - 1));
+  $("#lbNext").addEventListener("click", () => showLightbox(lbIndex + 1));
+  lb.addEventListener("click", (e) => { if (e.target === lb) closeLightbox(); });
+  document.addEventListener("keydown", (e) => {
+    if (lb.hidden) return;
+    if (e.key === "Escape") closeLightbox();
+    else if (e.key === "ArrowLeft") showLightbox(lbIndex - 1);
+    else if (e.key === "ArrowRight") showLightbox(lbIndex + 1);
+    else if (e.key === "Tab") {
+      const focusables = $$("button", lb);
+      const first = focusables[0], last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+  let touchX = null;
+  lb.addEventListener("touchstart", (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+  lb.addEventListener("touchend", (e) => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) showLightbox(lbIndex + (dx < 0 ? 1 : -1));
+    touchX = null;
+  }, { passive: true });
 
-  const appEl = document.getElementById('app');
-  appEl.addEventListener('wheel', (e)=>{
-    if(!e.target.closest('.letter-card')) e.preventDefault();
-  }, { passive:false });
+  /* ---------- Video gallery ---------- */
+  const videoGrid = $("#videoGrid");
+  const videoCards = [];
+  let musicWasOn = false;
 
-  let touchStartY = 0;
-  appEl.addEventListener('touchstart', (e)=>{ touchStartY = e.touches[0].clientY; }, { passive:true });
-  appEl.addEventListener('touchmove', (e)=>{
-    const scrollable = e.target.closest('.page, .letter-card');
-    if(scrollable){
-      const atTop = scrollable.scrollTop <= 0;
-      const atBottom = scrollable.scrollTop + scrollable.clientHeight >= scrollable.scrollHeight - 1;
-      const goingUp = e.touches[0].clientY > touchStartY;
-      const goingDown = e.touches[0].clientY < touchStartY;
-      if((atTop && goingUp) || (atBottom && goingDown)){
-        e.preventDefault();
+  CONFIG.videos.forEach((v, i) => {
+    const card = document.createElement("article");
+    card.className = "video-card glass reveal";
+    card.style.setProperty("--d", i * 0.1 + "s");
+    card.innerHTML =
+      '<div class="video-wrap">' +
+        '<video preload="none" playsinline ' + (v.poster ? 'poster="' + esc(v.poster) + '"' : "") + ' src="' + esc(v.src) + '"></video>' +
+        '<button type="button" class="play-btn" aria-label="Play video: ' + esc(v.title) + '">▶</button>' +
+      '</div>' +
+      '<div class="video-info"><h3>' + esc(v.title) + '</h3><p>' + esc(v.caption) + '</p></div>';
+
+    const video = $("video", card);
+    const btn = $(".play-btn", card);
+    const wrap = $(".video-wrap", card);
+
+    function showMsg(text) {
+      let m = $(".video-msg", wrap);
+      if (!m) { m = document.createElement("div"); m.className = "video-msg"; wrap.appendChild(m); }
+      m.textContent = text;
+    }
+    function toggle() {
+      if (video.paused) {
+        videoCards.forEach((o) => { if (o.video !== video) o.video.pause(); });
+        const p = video.play();
+        if (p && p.catch) p.catch(() => showMsg("Video not found. Add " + v.src));
+      } else video.pause();
+    }
+    btn.addEventListener("click", toggle);
+    video.addEventListener("click", toggle);
+    video.addEventListener("play", () => {
+      card.classList.add("playing");
+      video.controls = true;
+      btn.textContent = "❚❚";
+      btn.setAttribute("aria-label", "Pause video");
+      if (!bgm.paused) { musicWasOn = true; bgm.pause(); setMusicUI(false); }
+    });
+    video.addEventListener("pause", () => {
+      card.classList.remove("playing");
+      btn.textContent = "▶";
+      btn.setAttribute("aria-label", "Play video: " + v.title);
+      if (!videoCards.some((o) => !o.video.paused) && musicWasOn) {
+        musicWasOn = false;
+        playMusic();
       }
-    } else {
-      e.preventDefault();
-    }
-  }, { passive:false });
-
-  const envelope = document.getElementById('envelope');
-  const envelopeWrap = document.getElementById('envelopeWrap');
-  const letterOverlay = document.getElementById('letterOverlay');
-  const closeLetterBtn = document.getElementById('closeLetterBtn');
-  let opened = false;
-
-  envelopeWrap.addEventListener('click', ()=>{
-    if(opened) return;
-    opened = true;
-    envelope.classList.add('open');
-    document.querySelector('.tap-hint').style.opacity = '0';
-    setTimeout(()=>{
-      letterOverlay.classList.add('show');
-    }, 900);
-  });
-
-  closeLetterBtn.addEventListener('click', ()=>{
-    letterOverlay.classList.remove('show');
-    unlockUpTo(1);
-    setTimeout(()=> goTo(1), 350);
-  });
-
-  const notesGrid = document.getElementById('notesGrid');
-  CONFIG.notes.forEach(n=>{
-    const card = document.createElement('div');
-    card.className = 'note';
-    card.innerHTML = `
-      <div class="note-inner">
-        <div class="note-face note-front"><span class="icon">${n.icon}</span><span>${n.front}</span></div>
-        <div class="note-face note-back">${n.back}</div>
-      </div>`;
-    card.addEventListener('click', ()=> card.classList.toggle('flipped'));
-    notesGrid.appendChild(card);
-  });
-
-  document.getElementById('toPage2').addEventListener('click', ()=>{
-    unlockUpTo(2);
-    goTo(2);
-  });
-
-  const timelineEl = document.getElementById('timeline');
-  CONFIG.timeline.forEach(item=>{
-    const div = document.createElement('div');
-    div.className = 't-item';
-    div.innerHTML = `<p class="t-label">${item.label}</p><p class="t-text">${item.text}</p>`;
-    timelineEl.appendChild(div);
-  });
-
-  document.getElementById('toPage3').addEventListener('click', ()=>{
-    unlockUpTo(3);
-    goTo(3);
-  });
-
-  const candlesEl = document.getElementById('candles');
-  const totalCandles = 3;
-  let remaining = totalCandles;
-  for(let i=0;i<totalCandles;i++){
-    const c = document.createElement('div');
-    c.className = 'candle';
-    c.innerHTML = `<div class="flame"></div><div class="smoke"></div>`;
-    c.addEventListener('click', ()=>{
-      if(c.classList.contains('blown')) return;
-      c.classList.add('blown');
-      remaining--;
-      updateCakeHint();
     });
-    candlesEl.appendChild(c);
-  }
-  const cakeHint = document.getElementById('cakeHint');
-  const cakeMsg = document.getElementById('cakeMsg');
-  const toPage4Btn = document.getElementById('toPage4');
+    video.addEventListener("ended", () => { video.controls = false; });
+    video.addEventListener("error", () => { if (video.getAttribute("src")) showMsg("Video not found. Add " + v.src); });
 
-  function updateCakeHint(){
-    if(remaining > 0){
-      cakeHint.textContent = remaining + ' candle' + (remaining>1?'s':'') + ' left';
-    } else {
-      cakeHint.textContent = 'Your wish is on its way! 🌟';
-      cakeMsg.textContent = "It's bound to come true 💫";
-      toPage4Btn.classList.add('show');
-      burstConfetti();
-      unlockUpTo(4);
+    videoCards.push({ video });
+    videoGrid.appendChild(card);
+  });
+
+  /* ---------- Timeline ---------- */
+  CONFIG.timeline.forEach((t, i) => {
+    const item = document.createElement("div");
+    item.className = "tl-item " + (i % 2 === 0 ? "left" : "right") + " reveal";
+    item.innerHTML =
+      '<span class="tl-dot"></span>' +
+      '<div class="tl-card glass" role="button" tabindex="0" aria-expanded="false">' +
+        '<span class="tl-date">' + esc(t.date) + '</span>' +
+        '<h3>' + esc(t.title) + '</h3>' +
+        '<p>' + esc(t.text) + '</p>' +
+        (t.more ? '<div class="tl-more"><div><p>' + esc(t.more) + '</p></div></div><span class="tl-hint">Tap to read more ↓</span>' : "") +
+      '</div>';
+    const card = $(".tl-card", item);
+    const hint = $(".tl-hint", item);
+    function toggle() {
+      if (!t.more) return;
+      const open = card.classList.toggle("open");
+      card.setAttribute("aria-expanded", String(open));
+      hint.textContent = open ? "Tap to close ↑" : "Tap to read more ↓";
+      if (open) heartBurst(card.getBoundingClientRect().left + 40, card.getBoundingClientRect().top + 30, 4);
     }
-  }
-  updateCakeHint();
-
-  toPage4Btn.addEventListener('click', ()=> goTo(4));
-
-  const balloonField = document.getElementById('balloonField');
-  const wishCaught = document.getElementById('wishCaught');
-  const balloonProgress = document.getElementById('balloonProgress');
-  const toPage5Btn = document.getElementById('toPage5');
-  const balloonColors = ['#FF9EBB','#D9C9F5','#F3C969','#FFC3D6','#B79EF0','#FFB2CC','#EADCFA','#FCE0B8'];
-  let poppedCount = 0;
-
-  CONFIG.balloonWishes.forEach((wish, i)=>{
-    const b = document.createElement('div');
-    b.className = 'balloon';
-    b.innerHTML = `<div class="balloon-body" style="background: radial-gradient(circle at 32% 28%, #ffffffaa, ${balloonColors[i % balloonColors.length]});"></div><div class="balloon-string"></div>`;
-    b.addEventListener('click', ()=>{
-      if(b.classList.contains('popped')) return;
-      b.classList.add('popped');
-      wishCaught.textContent = wish;
-      poppedCount++;
-      balloonProgress.textContent = poppedCount + ' of ' + CONFIG.balloonWishes.length + ' wishes caught';
-      if(poppedCount === CONFIG.balloonWishes.length){
-        toPage5Btn.classList.add('show');
-        unlockUpTo(5);
-      }
+    card.addEventListener("click", toggle);
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
     });
-    balloonField.appendChild(b);
+    tlList.appendChild(item);
   });
-  balloonProgress.textContent = '0 of ' + CONFIG.balloonWishes.length + ' wishes caught';
 
-  toPage5Btn.addEventListener('click', ()=> goTo(5));
+  /* ---------- Interactive cake ---------- */
+  const wishCake = $("#wishCake");
+  const wishBtn = $("#wishBtn");
+  const wishMessage = $("#wishMessage");
+  let candlesOut = false;
 
-  function burstConfetti(){
-    const colors = ['#FF9EBB','#D9C9F5','#F3C969','#FFC3D6','#B79EF0'];
-    for(let i=0;i<50;i++){
-      const p = document.createElement('div');
-      p.className = 'confetti-piece';
-      const size = 6 + Math.random()*6;
-      p.style.width = size + 'px';
-      p.style.height = (size*0.4) + 'px';
-      p.style.left = Math.random()*100 + 'vw';
-      p.style.background = colors[Math.floor(Math.random()*colors.length)];
-      p.style.animationDuration = (2 + Math.random()*1.8) + 's';
-      document.body.appendChild(p);
-      setTimeout(()=> p.remove(), 4200);
+  wishBtn.addEventListener("click", () => {
+    if (!candlesOut) {
+      candlesOut = true;
+      wishCake.classList.add("out");
+      wishBtn.textContent = "Light The Candles Again 🕯️";
+      wishMessage.hidden = false;
+      wishMessage.style.animation = "none";
+      void wishMessage.offsetWidth;
+      wishMessage.style.animation = "";
+      const c = centerOf(wishCake);
+      setTimeout(() => {
+        confettiBurst(c.x, c.y);
+        confettiShower();
+        heartBurst(c.x, c.y, 10);
+      }, 350);
+      setTimeout(() => wishMessage.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" }), 700);
+    } else {
+      candlesOut = false;
+      wishCake.classList.remove("out");
+      wishBtn.textContent = "Make A Wish";
+      wishMessage.hidden = true;
     }
-  }
-
-  document.getElementById('restartBtn').addEventListener('click', ()=>{
-    opened = false;
-    envelope.classList.remove('open');
-    document.querySelector('.tap-hint').style.opacity = '1';
-    remaining = totalCandles;
-    document.querySelectorAll('.candle').forEach(c=> c.classList.remove('blown'));
-    cakeHint.textContent = totalCandles + ' candles left';
-    cakeMsg.textContent = '';
-    toPage4Btn.classList.remove('show');
-    document.querySelectorAll('.note').forEach(n=> n.classList.remove('flipped'));
-    document.querySelectorAll('.balloon').forEach(b=> b.classList.remove('popped'));
-    poppedCount = 0;
-    balloonProgress.textContent = '0 of ' + CONFIG.balloonWishes.length + ' wishes caught';
-    wishCaught.textContent = '';
-    toPage5Btn.classList.remove('show');
-    unlocked = 0;
-    goTo(0);
   });
 
+  /* ---------- Final button ---------- */
+  const foreverBtn = $("#foreverBtn");
+  const foreverMsg = $("#foreverMsg");
+  foreverBtn.addEventListener("click", () => {
+    const open = foreverMsg.hidden;
+    foreverMsg.hidden = !open;
+    foreverBtn.setAttribute("aria-expanded", String(open));
+    if (open) {
+      const c = centerOf(foreverBtn);
+      heartBurst(c.x, c.y, 16);
+      confettiBurst(c.x, c.y);
+      setTimeout(() => foreverMsg.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" }), 250);
+    }
+  });
+
+  onScroll();
 })();
