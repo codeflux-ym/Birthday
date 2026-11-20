@@ -10,22 +10,22 @@ const CONFIG = {
   // ratio = shape of the placeholder shown until your real photo exists ("4 / 5", "1 / 1", "16 / 10"...)
   // Real photos keep their own natural shape. Add or remove lines freely.
   gallery: [
-    { src: "assets/images/memory1.jpg", caption: "Caption for memory 1", ratio: "4 / 5" },
-    { src: "assets/images/memory2.jpg", caption: "Caption for memory 2", ratio: "1 / 1" },
-    { src: "assets/images/memory3.jpg", caption: "Caption for memory 3", ratio: "16 / 11" },
-    { src: "assets/images/memory4.jpg", caption: "Caption for memory 4", ratio: "3 / 4" },
-    { src: "assets/images/memory5.jpg", caption: "Caption for memory 5", ratio: "4 / 3" },
-    { src: "assets/images/memory6.jpg", caption: "Caption for memory 6", ratio: "4 / 5" },
-    { src: "assets/images/memory7.jpg", caption: "Caption for memory 7", ratio: "1 / 1" },
-    { src: "assets/images/memory8.jpg", caption: "Caption for memory 8", ratio: "3 / 4" }
+    { src: "IMG-20261120-WA0019.jpg", caption: "Caption for memory 1", ratio: "4 / 5" },
+    { src: "IMG-20261120-WA0020.jpg", caption: "Caption for memory 2", ratio: "1 / 1" },
+    { src: "IMG-20261120-WA0018.jpg", caption: "Caption for memory 3", ratio: "16 / 11" },
+    { src: "IMG-20261120-WA0014.jpg", caption: "Caption for memory 4", ratio: "3 / 4" },
+    { src: "IMG-20261120-WA0015.jpg", caption: "Caption for memory 5", ratio: "4 / 3" },
+    { src: "IMG-20261120-WA0012.jpg", caption: "Caption for memory 6", ratio: "4 / 5" },
+    { src: "IMG-20261120-WA0011.jpg", caption: "Caption for memory 7", ratio: "1 / 1" },
+    { src: "IMG-20261120-WA0010.jpg", caption: "Caption for memory 8", ratio: "3 / 4" }
   ],
 
   // Videos for "Little Moments, Lifetime Memories."
   // poster = thumbnail image (optional, leave "" for none)
   videos: [
-    { src: "assets/videos/video1.mp4", poster: "assets/images/video1-thumb.jpg", title: "Video title 1", caption: "Write a few words about this moment." },
-    { src: "assets/videos/video2.mp4", poster: "assets/images/video2-thumb.jpg", title: "Video title 2", caption: "Write a few words about this moment." },
-    { src: "assets/videos/video3.mp4", poster: "assets/images/video3-thumb.jpg", title: "Video title 3", caption: "Write a few words about this moment." }
+    { src: "VID-20261120-WA0025.mp4", poster: "assets/images/video1-thumb.jpg", },
+    { src: "VID-20261120-WA0028.mp4", poster: "assets/images/video2-thumb.jpg", },
+    { src: "VID-20261120-WA0029.mp4", poster: "assets/images/video3-thumb.jpg", }
   ],
 
   // Timeline for "Two Brothers. Countless Memories."
